@@ -55,6 +55,11 @@ const APPROVED_LOGINS = [
   "sa9252",
 ];
 
+// Only specific users require a password
+const PASSWORD_REQUIRED = {
+  js9640: "noseygit", // ← change this to your real password
+};
+
 const RESTRICTED_ACCESS = ["cp2532", "js9640", "gr73"];
 
 const AUTH_KEY = "stagevault-auth-v1";
@@ -100,6 +105,7 @@ export default function App() {
     const clean = input.trim().toLowerCase();
     if (!clean) return;
 
+    // Guest login
     if (clean === "guest") {
       const guest = { id: "guest", role: "guest" };
       setUser(guest);
@@ -108,6 +114,16 @@ export default function App() {
       return;
     }
 
+    // Users that require a password (currently only js9640)
+    if (clean in PASSWORD_REQUIRED) {
+      const pwd = prompt("Enter password:");
+      if (pwd !== PASSWORD_REQUIRED[clean]) {
+        alert("Incorrect password.");
+        return;
+      }
+    }
+
+    // Normal approved login
     if (APPROVED_LOGINS.includes(clean)) {
       const full = { id: clean, role: "full" };
       setUser(full);
